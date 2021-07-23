@@ -1,0 +1,11 @@
+# cam
+cam/__pycache__/
+
+# webapp
+webapp/node_modules/
+
+# misc
+__pycache__/
+.vscode/
+.DS_Store
+.env.local
