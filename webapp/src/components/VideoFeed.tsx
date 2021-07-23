@@ -43,7 +43,7 @@ const VideoFeed = (): JSX.Element => {
                 <img
                     id="videoFeed"
                     style={{ filter: videoFilter }}
-                    src="http://192.168.1.74:8000/video_feed"
+                    src="http://localhost:8000/video_feed"
                     onDoubleClick={toggleFullscreen}
                 />
             </div>
