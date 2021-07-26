@@ -3,6 +3,7 @@ cam/__pycache__/
 
 # webapp
 webapp/node_modules/
+webapp/build/
 
 # misc
 __pycache__/

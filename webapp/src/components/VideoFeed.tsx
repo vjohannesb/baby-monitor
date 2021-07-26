@@ -1,16 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Spinner, SpinnerSize } from "@fluentui/react";
 import { useAppContext } from "../context/ContextProvider";
 
 import "./VideoFeed.scss";
 
 const VideoFeed = (): JSX.Element => {
     const {
-        brightnessState: { brightness },
-        contrastState: { contrast },
-        nightVisionState: { nightVision },
+        filterState: { brightness, contrast, nightVision },
+        connectionState: { connected, setConnected },
     } = useAppContext();
 
-    const videoFeed = useRef<HTMLDivElement>(null);
+    const videoFeedContainer = useRef<HTMLDivElement>(null);
     const fullscreen = useRef(false);
 
     const [videoFilter, setVideoFilter] = useState(
@@ -31,20 +31,32 @@ const VideoFeed = (): JSX.Element => {
 
     const toggleFullscreen = () => {
         if (!fullscreen.current)
-            videoFeed.current
+            videoFeedContainer.current
                 ?.requestFullscreen({ navigationUI: "hide" })
                 .then(() => (fullscreen.current = true));
         else document.exitFullscreen().then(() => (fullscreen.current = false));
     };
 
+    const onCameraLoaded = () => setConnected(true);
+
     return (
         <>
-            <div ref={videoFeed}>
+            {!connected && (
+                <div id="loader">
+                    <Spinner
+                        label="Connecting to camera..."
+                        size={SpinnerSize.large}
+                    />
+                </div>
+            )}
+
+            <div ref={videoFeedContainer}>
                 <img
                     id="videoFeed"
                     style={{ filter: videoFilter }}
-                    src="http://localhost:8000/video_feed"
+                    src="/video_feed"
                     onDoubleClick={toggleFullscreen}
+                    onLoad={onCameraLoaded}
                 />
             </div>
         </>

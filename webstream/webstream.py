@@ -1,5 +1,6 @@
 # from cam.pycam import MotionDetector
 
+from flask.templating import render_template
 from imutils.video import VideoStream
 from datetime import datetime as dt
 from flask import Response
@@ -13,14 +14,14 @@ import cv2
 WIDTH = 640
 HEIGHT = 480
 
-# # Init output and thread lock
+# Init output and thread lock
 output_frame = None
 lock = threading.Lock()
 
 app = Flask(__name__)
 vs = VideoStream(src=0).start()
 
-locale.setlocale(locale.LC_TIME, "sv_SE")
+# locale.setlocale(locale.LC_TIME, "sv_SE")
 
 def detect_motion(frame_count):
     global vs, output_frame, lock 
@@ -84,6 +85,10 @@ def generate():
         
         yield(b"--frame\r\n" b"Content-Type: image/jpeg\r\n\r\n" + bytearray(encoded_img) + b"\r\n")
 
+
+@app.route("/")
+def index():
+    return render_template("index.html")
 
 @app.route("/video_feed")
 def video_feed():

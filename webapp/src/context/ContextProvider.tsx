@@ -1,39 +1,41 @@
 import React from "react";
 import { useContext, createContext, useState } from "react";
 
-type BrightnessState = {
+type FilterState = {
     brightness: number;
     setBrightness: React.Dispatch<React.SetStateAction<number>>;
-};
-
-type ContrastState = {
     contrast: number;
     setContrast: React.Dispatch<React.SetStateAction<number>>;
-};
-
-type NightVisionState = {
     nightVision: boolean;
     setNightVision: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+type ConnectionState = {
+    connected: boolean;
+    setConnected: React.Dispatch<React.SetStateAction<boolean>>;
+    address: string;
+    setAddress: React.Dispatch<React.SetStateAction<string>>;
+};
+
 type Context = {
-    brightnessState: BrightnessState;
-    contrastState: ContrastState;
-    nightVisionState: NightVisionState;
+    filterState: FilterState;
+    connectionState: ConnectionState;
 };
 
 const defaults = {
-    brightnessState: {
+    filterState: {
         brightness: 0,
         setBrightness: (): number => 0,
-    },
-    contrastState: {
         contrast: 0,
         setContrast: (): number => 0,
-    },
-    nightVisionState: {
         nightVision: false,
         setNightVision: (): boolean => false,
+    },
+    connectionState: {
+        connected: false,
+        setConnected: (): boolean => false,
+        address: "192.168.50.5",
+        setAddress: (): string => "192.168.50.5",
     },
 };
 
@@ -52,19 +54,23 @@ export const ContextProvider = ({
     const [brightness, setBrightness] = useState(0);
     const [contrast, setContrast] = useState(0);
     const [nightVision, setNightVision] = useState(false);
+    const [connected, setConnected] = useState(false);
+    const [address, setAddress] = useState("192.168.50.5");
 
     const contextState: Context = {
-        brightnessState: {
+        filterState: {
             brightness: brightness,
             setBrightness: setBrightness,
-        },
-        contrastState: {
             contrast: contrast,
             setContrast: setContrast,
-        },
-        nightVisionState: {
             nightVision: nightVision,
             setNightVision: setNightVision,
+        },
+        connectionState: {
+            connected: connected,
+            setConnected: setConnected,
+            address: address,
+            setAddress: setAddress,
         },
     };
 

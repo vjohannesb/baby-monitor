@@ -7,9 +7,14 @@ import Row from "react-bootstrap/Row";
 
 const Settings = (): JSX.Element => {
     const {
-        brightnessState: { brightness, setBrightness },
-        contrastState: { contrast, setContrast },
-        nightVisionState: { nightVision, setNightVision },
+        filterState: {
+            brightness,
+            setBrightness,
+            contrast,
+            setContrast,
+            nightVision,
+            setNightVision,
+        },
     } = useAppContext();
 
     const onBrightnessChange = (value: number) => setBrightness(value);
