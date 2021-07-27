@@ -66,7 +66,10 @@ def get_frame():
         # cv2.putText(frame, f"{ts:%a %d %b %Y %H:%M:%S}", (5, HEIGHT - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
         
         with lock:
-            output_frame = frame.copy()
+            try:
+                output_frame = frame.copy()
+            except:
+                pass
 
 def generate():
     global output_frame, lock
