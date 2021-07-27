@@ -63,9 +63,7 @@ def get_frame():
         # Add timestamp to video feed (disabled for now)
         # ts = dt.now()
         # cv2.rectangle(frame, (0, HEIGHT), (220, 460), (0,0,0), -1)
-        # cv2.putText(frame, f"{ts:%a %d %b %Y %H:%M:%S}",
-        #             (5, HEIGHT - 5),
-        #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+        # cv2.putText(frame, f"{ts:%a %d %b %Y %H:%M:%S}", (5, HEIGHT - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
         
         with lock:
             output_frame = frame.copy()
