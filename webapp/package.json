@@ -25,7 +25,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "postbuild": "purgecss --css build/static/css/*.css --content build/index.html build/static/js/*.js --output static/purged/css --safelist col-8 col-3",
+    "postbuild": "purgecss --css build/static/css/*.css --content build/index.html build/static/js/*.js --output static/css/purged --safelist col-8 col-3",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

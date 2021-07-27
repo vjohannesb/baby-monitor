@@ -11,7 +11,7 @@ const VideoFeed = (): JSX.Element => {
     } = useAppContext();
 
     const videoFeedContainer = useRef<HTMLDivElement>(null);
-    const fullscreen = useRef(false);
+    const [fullscreen, setFullscreen] = useState(false);
 
     const [videoFilter, setVideoFilter] = useState(
         `brightness(${brightness + 100}%) 
@@ -30,11 +30,11 @@ const VideoFeed = (): JSX.Element => {
     }, [brightness, contrast, nightVision]);
 
     const toggleFullscreen = () => {
-        if (!fullscreen.current)
+        if (!fullscreen)
             videoFeedContainer.current
                 ?.requestFullscreen({ navigationUI: "hide" })
-                .then(() => (fullscreen.current = true));
-        else document.exitFullscreen().then(() => (fullscreen.current = false));
+                .then(() => setFullscreen(true));
+        else document.exitFullscreen().then(() => setFullscreen(false));
     };
 
     const onCameraLoaded = () => setConnected(true);
