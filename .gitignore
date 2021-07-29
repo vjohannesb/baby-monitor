@@ -1,6 +1,9 @@
 # cam
 cam/__pycache__/
 
+# server
+**/node_modules/
+
 # webapp
 webapp/node_modules/
 webapp/build/
