@@ -16,7 +16,7 @@ const connectNotifOptions: NotificationOptions = {
 };
 
 const socketio = (): Socket<DefaultEventsMap, DefaultEventsMap> => {
-    const socket = io("https://localhost:8000/", {
+    const socket = io({
         reconnectionAttempts: 5,
         reconnectionDelay: 1000,
         reconnectionDelayMax: 5000,
