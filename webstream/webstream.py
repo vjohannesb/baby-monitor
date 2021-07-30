@@ -11,6 +11,7 @@ import imutils
 import dotenv
 import json
 import cv2
+import os
 
 WIDTH = 640
 HEIGHT = 480
@@ -144,9 +145,9 @@ def index():
 def video_feed():
     return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")
 
-@socketio.event
-def connect(auth):
-    print(f"[{dt.now():%Y-%m-%d %H:%M:%S}] New socket connection.")
+# @socketio.event
+# def connect(auth):
+#     print(f"[{dt.now():%Y-%m-%d %H:%M:%S}] New socket connection.")
 
 @socketio.event
 def set_notif_delta(data):
@@ -171,7 +172,7 @@ if __name__ == "__main__":
     # SSL needed for Notifications API.
     # Self-signed [ssl_context='adhoc'] as it's only running locally
     # *not* recommended in production
-    context = ("localhost.crt", "localhost.key")
+    context = (os.path.abspath("localhost.crt"), os.path.abspath("localhost.key"))
     socketio.run(app, host=args["ip"], port=args["port"], debug=False, ssl_context=context)
 
 # Release VideoStream pointer
