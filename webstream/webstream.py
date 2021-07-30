@@ -1,6 +1,6 @@
 from flask.templating import render_template
 from imutils.video import VideoStream
-from datetime import datetime as dt
+from datetime import datetime as dt, timedelta
 from flask import Response
 from flask import Flask
 from flask_socketio import SocketIO
@@ -62,8 +62,8 @@ app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 vs = VideoStream(src=0).start()
 
-last_motion_emit = dt.now()
 motion_notif_limit = 60
+last_motion_emit = dt.now() - timedelta(seconds=motion_notif_limit)
 
 def detect_motion(frame_count):
     global vs, output_frame, lock, last_motion_emit
@@ -91,6 +91,7 @@ def detect_motion(frame_count):
                 cv2.rectangle(frame, (min_x, min_y), (max_x, max_y),
                 (50, 50, 255), 2)
 
+                # Emit 'motion detected' signal to webapp
                 delta = (dt.now() - last_motion_emit).seconds
                 if delta >= motion_notif_limit:
                     socketio.emit("motion")
