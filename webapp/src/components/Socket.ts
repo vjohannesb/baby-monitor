@@ -3,14 +3,14 @@ import { DefaultEventsMap } from "socket.io/dist/typed-events";
 
 const motionNotifOptions: NotificationOptions = {
     body: "Motion detected! Click here to view baby monitor.",
-    icon: "{{ url_for('static', filename='android-chrome-192x192.png') }}",
+    icon: "../static/android-chrome-192x192.png",
     renotify: true,
     tag: "babyMonitor",
 };
 
 const connectNotifOptions: NotificationOptions = {
     body: "Connected to BabyMonitor notifications.",
-    icon: "{{ url_for('static', filename='android-chrome-192x192.png') }}",
+    icon: "../static/android-chrome-192x192.png",
     renotify: false,
     tag: "connection",
 };

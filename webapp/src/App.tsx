@@ -8,9 +8,6 @@ import { useAppContext } from "./context/ContextProvider";
 function App(): JSX.Element {
     useEffect(() => {
         const socket = socketio();
-        return () => {
-            socket.disconnect();
-        };
     }, []);
 
     const {
