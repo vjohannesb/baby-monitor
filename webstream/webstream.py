@@ -171,7 +171,8 @@ if __name__ == "__main__":
     # SSL needed for Notifications API.
     # Self-signed [ssl_context='adhoc'] as it's only running locally
     # *not* recommended in production
-    socketio.run(app, host=args["ip"], port=args["port"], debug=False, ssl_context="adhoc")
+    context = ("localhost.crt", "localhost.key")
+    socketio.run(app, host=args["ip"], port=args["port"], debug=False, ssl_context=context)
 
 # Release VideoStream pointer
 # vs.stop()
