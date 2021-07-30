@@ -1,6 +1,5 @@
-Flask==2.0.1
-numpy==1.19.5
-opencv_python==4.5.2.54
-Flask_SocketIO==5.1.0
 imutils==0.5.4
-python-dotenv==0.19.0
+numpy==1.19.5
+Flask==2.0.1
+Flask_SocketIO==5.1.0
+opencv_python==4.5.2.54

@@ -8,7 +8,6 @@ import numpy as np
 import threading
 import argparse
 import imutils
-import dotenv
 import json
 import cv2
 
