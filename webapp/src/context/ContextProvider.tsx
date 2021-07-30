@@ -55,7 +55,7 @@ export const ContextProvider = ({
     const [contrast, setContrast] = useState(0);
     const [nightVision, setNightVision] = useState(false);
     const [connected, setConnected] = useState(false);
-    const [address, setAddress] = useState("192.168.50.5");
+    const [address, setAddress] = useState("192.168.0.199");
 
     const contextState: Context = {
         filterState: {

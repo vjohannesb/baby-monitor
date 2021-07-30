@@ -11,16 +11,6 @@ const src = new cv.Mat(height, width, cv.CV_8UC4);
 app.use(express.static(path.join(__dirname, "build")));
 
 app.get("/", (req, res) => {
-	navigator.mediaDevices
-		.getUserMedia({ video: true, audio: false })
-		.then((stream) => {
-			video.srcObject = stream;
-			video.play();
-		})
-		.catch((err) => {
-			console.log(`An error occured! - ${err}`);
-		});
-
 	res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 

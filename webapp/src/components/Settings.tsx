@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { PrimaryButton, Slider, Toggle } from "@fluentui/react";
 import { useAppContext } from "../context/ContextProvider";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
+import { useEffect } from "react";
 
 const Settings = (): JSX.Element => {
+    const [notifPermission, setNotifPermission] = useState(false);
+
     const {
         filterState: {
             brightness,
@@ -17,6 +20,11 @@ const Settings = (): JSX.Element => {
         },
     } = useAppContext();
 
+    useEffect(
+        () => setNotifPermission(Notification.permission === "granted"),
+        []
+    );
+
     const onBrightnessChange = (value: number) => setBrightness(value);
     const onContrastChange = (value: number) => setContrast(value);
     const onToggleNightVision = (_: any, toggled?: boolean) =>
@@ -26,6 +34,14 @@ const Settings = (): JSX.Element => {
         setBrightness(0);
         setContrast(0);
         setNightVision(false);
+    };
+
+    const enableNotifications = () => {
+        if (!notifPermission) {
+            Notification.requestPermission().then((permission) => {
+                setNotifPermission(permission === "granted");
+            });
+        }
     };
 
     return (
@@ -69,6 +85,15 @@ const Settings = (): JSX.Element => {
                 <Col xs={3}>
                     <PrimaryButton text="Reset" onClick={resetFilter} />
                 </Col>
+
+                {!notifPermission && (
+                    <Col xs="auto" className="mt-4">
+                        <PrimaryButton
+                            text="Enable notifications"
+                            onClick={enableNotifications}
+                        />
+                    </Col>
+                )}
             </Row>
         </Container>
     );
