@@ -53,33 +53,33 @@ next_motion_emit = dt.now()
 
 def detect_motion(frame_count):
     global vs, output_frame, lock, next_motion_emit
-    md = MotionDetector(accumWeight=0.1)
+    # md = MotionDetector(accumWeight=0.1)
 
     last = dt.now()
 
-    for _ in range(frame_count):
-        frame = vs.read()
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        gray = cv2.GaussianBlur(gray, (7, 7), 0)
-        md.update(gray)
+    # for _ in range(frame_count):
+    #     frame = vs.read()
+    #     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    #     gray = cv2.GaussianBlur(gray, (7, 7), 0)
+    #     md.update(gray)
 
-        with lock:
-            output_frame = frame.copy()
+    #     with lock:
+    #         output_frame = frame.copy()
 
     while True:
         frame = vs.read()
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        gray = cv2.GaussianBlur(gray, (7, 7), 0)
+        # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        # gray = cv2.GaussianBlur(gray, (7, 7), 0)
         
-        motion = md.detect(gray)
+        # motion = md.detect(gray)
 
         fps = 1 / (dt.now() - last).total_seconds()
         cv2.putText(frame, f"FPS: {fps:.2f}", (5, HEIGHT - 5), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 1)
 
-        if motion:
-            if dt.now() > next_motion_emit:
-                socketio.emit("motion")
-                next_motion_emit = dt.now() + timedelta(seconds=motion_notif_limit)
+        # if motion:
+        #     if dt.now() > next_motion_emit:
+        #         socketio.emit("motion")
+        #         next_motion_emit = dt.now() + timedelta(seconds=motion_notif_limit)
 
         with lock:
             output_frame = frame.copy()
