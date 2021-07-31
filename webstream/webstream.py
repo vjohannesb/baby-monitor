@@ -73,7 +73,7 @@ def detect_motion(frame_count):
         
         # motion = md.detect(gray)
 
-        tdelta = (dt.now() - last).total_seconds()
+        tdelta = float((dt.now() - last).total_seconds())
         fps = 1 / tdelta
         print(tdelta)
         cv2.putText(frame, f"FPS: {fps:.2f}", (5, HEIGHT - 5), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 1)
