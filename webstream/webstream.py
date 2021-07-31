@@ -73,20 +73,19 @@ def detect_motion(frame_count):
         
         # motion = md.detect(gray)
 
-        tdelta = float((dt.now() - last).total_seconds())
-        fps = 1 / tdelta
-        print(tdelta)
-        cv2.putText(frame, f"FPS: {fps:.2f}", (5, HEIGHT - 5), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 1)
-
         # if motion:
         #     if dt.now() > next_motion_emit:
         #         socketio.emit("motion")
         #         next_motion_emit = dt.now() + timedelta(seconds=motion_notif_limit)
 
         with lock:
+            tdelta = float((dt.now() - last).total_seconds())
+            fps = 1 / tdelta
+            print(tdelta)
+            cv2.putText(frame, f"FPS: {fps:.2f}", (5, HEIGHT - 5), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 1)
             output_frame = frame.copy()
+            last = dt.now()
         
-        last = dt.now()
 
 def generate():
     global output_frame, lock
