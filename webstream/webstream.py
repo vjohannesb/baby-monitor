@@ -79,9 +79,8 @@ def detect_motion(frame_count):
         #         next_motion_emit = dt.now() + timedelta(seconds=motion_notif_limit)
 
         with lock:
-            tdelta = float((dt.now() - last).total_seconds())
+            tdelta = float((dt.now() - last).total_seconds()) * 100
             fps = 1 / tdelta
-            print(tdelta)
             cv2.putText(frame, f"FPS: {fps:.2f}", (5, HEIGHT - 5), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 1)
             output_frame = frame.copy()
             last = dt.now()
