@@ -9,9 +9,7 @@ import threading
 import argparse
 import imutils
 import dotenv
-import json
 import cv2
-import os
 
 WIDTH = 640
 HEIGHT = 480
@@ -42,19 +40,7 @@ class MotionDetector:
 
         if len(contours) == 0:
             return None
-
-        # Default values
-        (min_x, min_y) = (np.inf, np.inf)
-        (max_x, max_y) = (-np.inf, -np.inf)
-        
-        # Set bounding box
-        for c in contours:
-            (x, y, w, h) = cv2.boundingRect(c)
-            (min_x, min_y) = (min(min_x, x), min(min_y, y))
-            (max_x, max_y) = (max(max_x, x + w), max(max_y, y + h))
-
-        # Threshold value + bounding box
-        return (threshold, (min_x, min_y, max_x, max_y))
+        return 1
 
 # Init output and thread lock
 output_frame = None
@@ -65,63 +51,35 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 vs = VideoStream(src=0).start()
 
 motion_notif_limit = 60
-last_motion_emit = dt.now() - timedelta(seconds=motion_notif_limit)
+next_motion_emit = dt.now()
 
 def detect_motion(frame_count):
-    global vs, output_frame, lock, last_motion_emit
-
+    global vs, output_frame, lock, next_motion_emit
     md = MotionDetector(accumWeight=0.1)
-    frames_read = 0
 
-    while True:
+    for _ in range(frame_count):
         frame = vs.read()
-        frame = imutils.resize(frame, height=HEIGHT)
-        gray = imutils.resize(frame, height=int(HEIGHT / 2))
-        gray = cv2.cvtColor(gray, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         gray = cv2.GaussianBlur(gray, (7, 7), 0)
-
-        # Add timestamp to video feed
-        ts = dt.now()
-        cv2.rectangle(frame, (0, HEIGHT), (220, 460), (0,0,0), -1)
-        cv2.putText(frame, f"{ts:%a %d %b %Y %H:%M:%S}", (5, HEIGHT - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
-        
-        if frames_read > frame_count:
-            motion = md.detect(gray)
-
-            if motion is not None:
-                # Add red rectangle around moving object
-                (threshold, (min_x, min_y, max_x, max_y)) = motion
-                cv2.rectangle(frame, (min_x, min_y), (max_x, max_y),
-                (50, 50, 255), 2)
-
-                # Emit 'motion detected' signal to webapp
-                delta = (dt.now() - last_motion_emit).seconds
-                if delta >= motion_notif_limit:
-                    socketio.emit("motion")
-                    last_motion_emit = dt.now()
-        else:
-            frames_read += 1
-
         md.update(gray)
+
         with lock:
             output_frame = frame.copy()
 
-def get_frame():
-    global output_frame, lock
-
     while True:
         frame = vs.read()
-
-        # Add timestamp to video feed
-        ts = dt.now()
-        cv2.rectangle(frame, (0, HEIGHT), (220, 460), (0,0,0), -1)
-        cv2.putText(frame, f"{ts:%a %d %b %Y %H:%M:%S}", (5, HEIGHT - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        gray = cv2.GaussianBlur(gray, (7, 7), 0)
         
+        motion = md.detect(gray)
+
+        if motion is not None:
+            if dt.now() > next_motion_emit:
+                socketio.emit("motion")
+                next_motion_emit = dt.now() + timedelta(seconds=motion_notif_limit)
+
         with lock:
-            try:
-                output_frame = frame.copy()
-            except:
-                pass
+            output_frame = frame.copy()
 
 def generate():
     global output_frame, lock
@@ -131,9 +89,9 @@ def generate():
             if output_frame is None:
                 continue
             
-            (flag, encoded_img) = cv2.imencode(".jpg", output_frame)
+            (success, encoded_img) = cv2.imencode(".jpg", output_frame)
 
-            if not flag:
+            if not success:
                 continue
         
         yield(b"--frame\r\n" b"Content-Type: image/jpeg\r\n\r\n" + bytearray(encoded_img) + b"\r\n")
@@ -145,14 +103,6 @@ def index():
 @app.route("/video_feed")
 def video_feed():
     return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")
-
-# @socketio.event
-# def set_notif_delta(data):
-#     global motion_notif_limit
-#     try:
-#         motion_notif_limit = json.loads(data)["delta"]
-#     except Exception as err:
-#         socketio.emit("error", { "error": err })
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
@@ -166,11 +116,7 @@ if __name__ == "__main__":
     t.daemon = True
     t.start()
 
-    # SSL needed for Notifications API.
-    # Self-signed [ssl_context='adhoc'] as it's only running locally
-    # *not* recommended in production
-    context = (os.path.abspath("localhost.crt"), os.path.abspath("localhost.key"))
-    socketio.run(app, host=args["ip"], port=args["port"], debug=False, ssl_context=context)
+    socketio.run(app, host=args["ip"], port=args["port"], debug=False)
 
-    # Release VideoStream pointer
-    # vs.stop()
+# Release VideoStream pointer
+# vs.stop()
