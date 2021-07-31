@@ -76,7 +76,7 @@ def detect_motion(frame_count):
     while True:
         frame = vs.read()
         frame = imutils.resize(frame, height=HEIGHT)
-        gray = imutils.resize(frame, height=HEIGHT / 2)
+        gray = imutils.resize(frame, height=int(HEIGHT / 2))
         gray = cv2.cvtColor(gray, cv2.COLOR_BGR2GRAY)
         gray = cv2.GaussianBlur(gray, (7, 7), 0)
 
@@ -172,5 +172,5 @@ if __name__ == "__main__":
     context = (os.path.abspath("localhost.crt"), os.path.abspath("localhost.key"))
     socketio.run(app, host=args["ip"], port=args["port"], debug=False, ssl_context=context)
 
-# Release VideoStream pointer
-# vs.stop()
+    # Release VideoStream pointer
+    # vs.stop()
