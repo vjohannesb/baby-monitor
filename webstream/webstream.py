@@ -76,7 +76,8 @@ def detect_motion(frame_count):
     while True:
         frame = vs.read()
         frame = imutils.resize(frame, height=HEIGHT)
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        gray = imutils.resize(frame, height=HEIGHT / 2)
+        gray = cv2.cvtColor(gray, cv2.COLOR_BGR2GRAY)
         gray = cv2.GaussianBlur(gray, (7, 7), 0)
 
         # Add timestamp to video feed
@@ -146,16 +147,12 @@ def video_feed():
     return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")
 
 # @socketio.event
-# def connect(auth):
-#     print(f"[{dt.now():%Y-%m-%d %H:%M:%S}] New socket connection.")
-
-@socketio.event
-def set_notif_delta(data):
-    global motion_notif_limit
-    try:
-        motion_notif_limit = json.loads(data)["delta"]
-    except Exception as err:
-        socketio.emit("error", { "error": err })
+# def set_notif_delta(data):
+#     global motion_notif_limit
+#     try:
+#         motion_notif_limit = json.loads(data)["delta"]
+#     except Exception as err:
+#         socketio.emit("error", { "error": err })
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
@@ -165,7 +162,7 @@ if __name__ == "__main__":
     args = vars(ap.parse_args())
     print(args)
     
-    t = threading.Thread(target=lambda: detect_motion(args["frame_count"]))
+    t = threading.Thread(target=detect_motion, args=(args["frame_count"],))
     t.daemon = True
     t.start()
 
