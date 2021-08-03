@@ -1,21 +1,7 @@
 import { io, Socket } from "socket.io-client";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
 
-const motionNotifOptions: NotificationOptions = {
-    body: "Motion detected! Click here to view baby monitor.",
-    icon: "../static/android-chrome-192x192.png",
-    renotify: true,
-    tag: "babyMonitor",
-};
-
-const connectNotifOptions: NotificationOptions = {
-    body: "Connected to BabyMonitor notifications.",
-    icon: "../static/android-chrome-192x192.png",
-    renotify: false,
-    tag: "connection",
-};
-
-const socketio = (): Socket<DefaultEventsMap, DefaultEventsMap> => {
+const initSocket = (): Socket<DefaultEventsMap, DefaultEventsMap> => {
     const socket = io({
         reconnectionAttempts: 5,
         reconnectionDelay: 1000,
@@ -27,10 +13,6 @@ const socketio = (): Socket<DefaultEventsMap, DefaultEventsMap> => {
     socket.on("connect", () => {
         socket.io.engine.requestTimeout = 0;
         console.log("Socket connected.");
-        const notification = new Notification(
-            "BabyMonitor connected",
-            connectNotifOptions
-        );
     });
 
     socket.on("connect_error", (error) => {
@@ -45,15 +27,7 @@ const socketio = (): Socket<DefaultEventsMap, DefaultEventsMap> => {
         console.log(`Error: ${error}`);
     });
 
-    socket.on("motion", (data) => {
-        console.log("Motion detected! " + data);
-        const notification = new Notification(
-            "BabyMonitor",
-            motionNotifOptions
-        );
-    });
-
     return socket;
 };
 
-export default socketio;
+export default initSocket;

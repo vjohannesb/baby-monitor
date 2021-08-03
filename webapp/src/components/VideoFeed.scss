@@ -5,6 +5,19 @@
     background: black;
 }
 
+.motion-alert {
+    animation: motionAlert 1s infinite;
+}
+
+@keyframes motionAlert {
+    from {
+        background: red;
+    }
+    to {
+        background: black;
+    }
+}
+
 #loader {
     position: absolute;
     z-index: 99;

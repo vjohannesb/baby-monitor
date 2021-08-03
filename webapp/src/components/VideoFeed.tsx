@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Spinner, SpinnerSize } from "@fluentui/react";
 import { useAppContext } from "../context/ContextProvider";
+import initSocket from "./Socket";
 
 import "./VideoFeed.scss";
 
@@ -10,8 +11,9 @@ const VideoFeed = (): JSX.Element => {
         connectionState: { connected, setConnected },
     } = useAppContext();
 
-    const videoFeedContainer = useRef<HTMLDivElement>(null);
     const [fullscreen, setFullscreen] = useState(false);
+    const videoFeedContainer = useRef<HTMLDivElement>(null);
+    const videoFeed = useRef<HTMLImageElement>(null);
 
     const [videoFilter, setVideoFilter] = useState(
         `brightness(${brightness + 100}%) 
@@ -29,12 +31,25 @@ const VideoFeed = (): JSX.Element => {
         );
     }, [brightness, contrast, nightVision]);
 
+    useEffect(() => {
+        const socket = initSocket();
+
+        socket.on("motion", () => {
+            videoFeed.current?.classList.remove("motion-alert");
+            videoFeed.current?.classList.add("motion-alert");
+        });
+    }, []);
+
     const toggleFullscreen = () => {
         if (!fullscreen)
             videoFeedContainer.current
                 ?.requestFullscreen({ navigationUI: "hide" })
                 .then(() => setFullscreen(true));
         else document.exitFullscreen().then(() => setFullscreen(false));
+    };
+
+    const stopAlert = () => {
+        videoFeed.current?.classList.remove("motion-alert");
     };
 
     const onCameraLoaded = () => setConnected(true);
@@ -55,8 +70,10 @@ const VideoFeed = (): JSX.Element => {
                     id="videoFeed"
                     style={{ filter: videoFilter }}
                     src="/video_feed"
+                    onClick={stopAlert}
                     onDoubleClick={toggleFullscreen}
                     onLoad={onCameraLoaded}
+                    ref={videoFeed}
                 />
             </div>
         </>
