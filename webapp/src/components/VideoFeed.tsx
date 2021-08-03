@@ -32,7 +32,7 @@ const VideoFeed = (): JSX.Element => {
     }, [brightness, contrast, nightVision]);
 
     useEffect(() => {
-        const socket = initSocket("http://localhost:8000");
+        const socket = initSocket();
 
         socket.on("motion", () => {
             videoFeed.current?.classList.remove("motion-alert");
@@ -74,7 +74,7 @@ const VideoFeed = (): JSX.Element => {
                 <img
                     id="videoFeed"
                     style={{ filter: videoFilter }}
-                    src="http://localhost:8000/video_feed"
+                    src="/video_feed"
                     onClick={stopAlert}
                     onDoubleClick={toggleFullscreen}
                     onLoad={onCameraLoaded}

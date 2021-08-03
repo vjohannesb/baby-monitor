@@ -28,7 +28,7 @@
         "start": "react-scripts start",
         "build": "react-scripts build",
         "prepostbuild": "md build/static/css/purged",
-        "postbuild": "mdkir -p build/static/css/purged; purgecss --css build/static/css/*.css --content build/index.html build/static/js/*.js --output build/static/css/purged --safelist col-8 col-3",
+        "postbuild": "mkdir -p build/static/css/purged; purgecss --css build/static/css/*.css --content build/index.html build/static/js/*.js --output build/static/css/purged --safelist col-8 col-3",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
     },
