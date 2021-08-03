@@ -32,7 +32,7 @@ const VideoFeed = (): JSX.Element => {
     }, [brightness, contrast, nightVision]);
 
     useEffect(() => {
-        const socket = initSocket();
+        const socket = initSocket("http://localhost:8000");
 
         socket.on("motion", () => {
             videoFeed.current?.classList.remove("motion-alert");
@@ -44,8 +44,13 @@ const VideoFeed = (): JSX.Element => {
         if (!fullscreen)
             videoFeedContainer.current
                 ?.requestFullscreen({ navigationUI: "hide" })
-                .then(() => setFullscreen(true));
-        else document.exitFullscreen().then(() => setFullscreen(false));
+                .then(() => setFullscreen(true))
+                .catch((err) => console.error(err));
+        else
+            document
+                .exitFullscreen()
+                .then(() => setFullscreen(false))
+                .catch((err) => console.error(err));
     };
 
     const stopAlert = () => {
@@ -69,7 +74,7 @@ const VideoFeed = (): JSX.Element => {
                 <img
                     id="videoFeed"
                     style={{ filter: videoFilter }}
-                    src="/video_feed"
+                    src="http://localhost:8000/video_feed"
                     onClick={stopAlert}
                     onDoubleClick={toggleFullscreen}
                     onLoad={onCameraLoaded}

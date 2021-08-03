@@ -1,14 +1,19 @@
-import { io, Socket } from "socket.io-client";
+import { SocketOptions } from "dgram";
+import { io, ManagerOptions, Socket } from "socket.io-client";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
 
-const initSocket = (): Socket<DefaultEventsMap, DefaultEventsMap> => {
-    const socket = io({
+const initSocket = (
+    address: string | null = null
+): Socket<DefaultEventsMap, DefaultEventsMap> => {
+    const options: Partial<ManagerOptions & SocketOptions> = {
         reconnectionAttempts: 5,
         reconnectionDelay: 1000,
         reconnectionDelayMax: 5000,
         timeout: 20000,
         requestTimeout: 1000,
-    });
+    };
+
+    const socket = address ? io(address, options) : io(options);
 
     socket.on("connect", () => {
         socket.io.engine.requestTimeout = 0;
