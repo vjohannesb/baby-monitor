@@ -13,7 +13,7 @@ const VideoFeed = (): JSX.Element => {
 
     const [fullscreen, setFullscreen] = useState(false);
     const videoFeedContainer = useRef<HTMLDivElement>(null);
-    const videoFeed = useRef<HTMLImageElement>(null);
+    const videoFeedOverlay = useRef<HTMLDivElement>(null);
 
     const [videoFilter, setVideoFilter] = useState(
         `brightness(${brightness + 100}%) 
@@ -35,8 +35,8 @@ const VideoFeed = (): JSX.Element => {
         const socket = initSocket();
 
         socket.on("motion", () => {
-            videoFeed.current?.classList.remove("motion-alert");
-            videoFeed.current?.classList.add("motion-alert");
+            videoFeedOverlay.current?.classList.remove("motion-alert");
+            videoFeedOverlay.current?.classList.add("motion-alert");
         });
     }, []);
 
@@ -54,13 +54,13 @@ const VideoFeed = (): JSX.Element => {
     };
 
     const stopAlert = () => {
-        videoFeed.current?.classList.remove("motion-alert");
+        videoFeedOverlay.current?.classList.remove("motion-alert");
     };
 
     const onCameraLoaded = () => setConnected(true);
 
     return (
-        <>
+        <div id="videoFeedContainer" ref={videoFeedContainer}>
             {!connected && (
                 <div id="loader">
                     <Spinner
@@ -69,19 +69,19 @@ const VideoFeed = (): JSX.Element => {
                     />
                 </div>
             )}
-
-            <div ref={videoFeedContainer}>
-                <img
-                    id="videoFeed"
-                    style={{ filter: videoFilter }}
-                    src="/video_feed"
-                    onClick={stopAlert}
-                    onDoubleClick={toggleFullscreen}
-                    onLoad={onCameraLoaded}
-                    ref={videoFeed}
-                />
-            </div>
-        </>
+            <img
+                id="videoFeed"
+                style={{ filter: videoFilter }}
+                src="/video_feed"
+                onLoad={onCameraLoaded}
+            />
+            <div
+                id="motionAlertOverlay"
+                onClick={stopAlert}
+                onDoubleClick={toggleFullscreen}
+                ref={videoFeedOverlay}
+            />
+        </div>
     );
 };
 

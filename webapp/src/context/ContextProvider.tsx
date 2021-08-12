@@ -13,8 +13,6 @@ type FilterState = {
 type ConnectionState = {
     connected: boolean;
     setConnected: React.Dispatch<React.SetStateAction<boolean>>;
-    address: string;
-    setAddress: React.Dispatch<React.SetStateAction<string>>;
 };
 
 type Context = {
@@ -34,8 +32,6 @@ const defaults = {
     connectionState: {
         connected: false,
         setConnected: (): boolean => false,
-        address: "192.168.50.5",
-        setAddress: (): string => "192.168.50.5",
     },
 };
 
@@ -55,7 +51,6 @@ export const ContextProvider = ({
     const [contrast, setContrast] = useState(0);
     const [nightVision, setNightVision] = useState(false);
     const [connected, setConnected] = useState(false);
-    const [address, setAddress] = useState("192.168.0.199");
 
     const contextState: Context = {
         filterState: {
@@ -69,8 +64,6 @@ export const ContextProvider = ({
         connectionState: {
             connected: connected,
             setConnected: setConnected,
-            address: address,
-            setAddress: setAddress,
         },
     };
 

@@ -24,8 +24,8 @@ app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
 vs = VideoStream(src=0).start()
 
-# Set up socket emit limits (once per emit_limit)
-emit_limit = 10
+# Motion alert emit limit
+emit_limit = 30
 
 class MotionDetector:
     def __init__(self, accumWeight=0.5) -> None:
