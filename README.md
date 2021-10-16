@@ -2,7 +2,7 @@
 
 ## 📜 Description
 
-A BabyMonitor built using OpenCV in Python, as well as a web-app built in React for easy viewing by any device on a local network. Uses SocketsIO to communicate motion detection from Python to the webapp, which alerts via CSS-effects. Some settings (such as brightness and contrast) available directly in the webapp utilizing CSS-filters as to not strain the poor Pi any further - if you're using a more robust version, there's probably better ways to enhance the picture directly in OpenCV.
+A BabyMonitor running on my Raspberry Pi Zero W. Built using OpenCV in Python, as well as a web-app built in React for easy viewing by any device on a local network. Uses SocketsIO to communicate motion detection from Python to the webapp, which alerts via CSS-effects. Some settings (such as brightness and contrast) available directly in the webapp utilizing CSS-filters as to not strain the poor Pi any further - if you're using something more robust, there's probably better ways to enhance the picture directly in OpenCV.
 
 I also used [AutoHotspot](https://github.com/RaspberryConnect/AutoHotspot-Installer) to make my Raspberry Pi Zero W launch a hotspot in case it doesn't recognize any WiFi's. I recommend reading up on the repository there, and bloglinks in the readme, if you're interested in a similar solution :)
 
