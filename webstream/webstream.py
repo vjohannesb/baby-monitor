@@ -44,12 +44,11 @@ class MotionDetector:
         threshold = cv2.threshold(delta, t_val, 255, cv2.THRESH_BINARY)[1]
 
         # Distort image to eradicate false positives
-        threshold = cv2.erode(threshold, None, iterations=2)
-        threshold = cv2.dilate(threshold, None, iterations=2)
+        threshold = cv2.erode(threshold, None, iterations=1)
+        threshold = cv2.dilate(threshold, None, iterations=1)
 
         # Contours of motion
-        contours = cv2.findContours(threshold.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        contours = imutils.grab_contours(contours)
+        contours = cv2.findContours(threshold, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
 
         return len(contours) > 0
 
@@ -68,7 +67,7 @@ def detect_motion(frame_count):
         gray = cv2.GaussianBlur(gray, (7, 7), 0)
         md.update(gray)
 
-    # Run MotionDetector once every second (unless detect + update takes longer)
+    # Run MotionDetector once every second (unless fn takes longer)
     while True:
         start = time()
         with lock:
@@ -83,7 +82,6 @@ def detect_motion(frame_count):
         ts = time()
         if motion and ts > next_emit:
             socketio.emit("motion")
-            print("motion!!")
             next_emit = ts + emit_limit
 
         sleep(max(0, 1 - (ts - start)))
@@ -91,19 +89,22 @@ def detect_motion(frame_count):
 def get_frame():
     global vs, output_frame, lock
     while True:
-        frame = vs.read()
+        ts = time()
         with lock:
-            output_frame = frame.copy()
+            output_frame = vs.read()
+
+        # Max 25 FPS
+        sleep(max(0, 0.04 - (time() - ts)))
 
 def generate():
     global output_frame, lock
+    params = [cv2.IMWRITE_JPEG_QUALITY, 80]
     while True:
         with lock:
             if output_frame is None:
                 continue
             
-            (success, encoded_img) = cv2.imencode(".jpg", output_frame)
-
+            success, encoded_img = cv2.imencode(".jpg", output_frame, params)
             if not success:
                 continue
         
